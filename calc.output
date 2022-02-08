@@ -1,0 +1,625 @@
+Grammatik
+
+    0 $accept: calculation $end
+
+    1 calculation: /* leer */
+    2            | calculation line
+
+    3 line: T_NEWLINE
+    4     | mixed_expression T_NEWLINE
+    5     | expression T_NEWLINE
+    6     | T_QUIT T_NEWLINE
+
+    7 mixed_expression: T_FLOAT
+    8                 | mixed_expression T_PLUS mixed_expression
+    9                 | mixed_expression T_MINUS mixed_expression
+   10                 | mixed_expression T_MULTIPLY mixed_expression
+   11                 | mixed_expression T_DIVIDE mixed_expression
+   12                 | T_LEFT mixed_expression T_RIGHT
+   13                 | expression T_PLUS mixed_expression
+   14                 | expression T_MINUS mixed_expression
+   15                 | expression T_MULTIPLY mixed_expression
+   16                 | expression T_DIVIDE mixed_expression
+   17                 | mixed_expression T_PLUS expression
+   18                 | mixed_expression T_MINUS expression
+   19                 | mixed_expression T_MULTIPLY expression
+   20                 | mixed_expression T_DIVIDE expression
+   21                 | expression T_DIVIDE expression
+
+   22 expression: T_INT
+   23           | expression T_PLUS expression
+   24           | expression T_MINUS expression
+   25           | expression T_MULTIPLY expression
+   26           | T_LEFT expression T_RIGHT
+
+
+Terminale und die Regeln, in denen sie verwendet werden
+
+$end (0) 0
+error (256)
+T_INT (258) 22
+T_FLOAT (259) 7
+T_PLUS (260) 8 13 17 23
+T_MINUS (261) 9 14 18 24
+T_MULTIPLY (262) 10 15 19 25
+T_DIVIDE (263) 11 16 20 21
+T_LEFT (264) 12 26
+T_RIGHT (265) 12 26
+T_NEWLINE (266) 3 4 5 6
+T_QUIT (267) 6
+
+
+Nicht-Terminal und die Regeln, in denen sie verwendet werden
+
+$accept (13)
+    auf der linken Seite: 0
+calculation (14)
+    auf der linken Seite: 1 2, auf der rechten Seite: 0 2
+line (15)
+    auf der linken Seite: 3 4 5 6, auf der rechten Seite: 2
+mixed_expression (16)
+    auf der linken Seite: 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21,
+    auf der rechten Seite: 4 8 9 10 11 12 13 14 15 16 17 18 19 20
+expression (17)
+    auf der linken Seite: 22 23 24 25 26, auf der rechten Seite: 5
+    13 14 15 16 17 18 19 20 21 23 24 25 26
+
+
+Zustand 0
+
+    0 $accept: . calculation $end
+
+    $default  reduziere mit Regel 1 (calculation)
+
+    calculation  gehe zu Zustand 1 über
+
+
+Zustand 1
+
+    0 $accept: calculation . $end
+    2 calculation: calculation . line
+
+    $end       schiebe und gehe zu Zustand 2 über
+    T_INT      schiebe und gehe zu Zustand 3 über
+    T_FLOAT    schiebe und gehe zu Zustand 4 über
+    T_LEFT     schiebe und gehe zu Zustand 5 über
+    T_NEWLINE  schiebe und gehe zu Zustand 6 über
+    T_QUIT     schiebe und gehe zu Zustand 7 über
+
+    line              gehe zu Zustand 8 über
+    mixed_expression  gehe zu Zustand 9 über
+    expression        gehe zu Zustand 10 über
+
+
+Zustand 2
+
+    0 $accept: calculation $end .
+
+    $default  annehmen
+
+
+Zustand 3
+
+   22 expression: T_INT .
+
+    $default  reduziere mit Regel 22 (expression)
+
+
+Zustand 4
+
+    7 mixed_expression: T_FLOAT .
+
+    $default  reduziere mit Regel 7 (mixed_expression)
+
+
+Zustand 5
+
+   12 mixed_expression: T_LEFT . mixed_expression T_RIGHT
+   26 expression: T_LEFT . expression T_RIGHT
+
+    T_INT    schiebe und gehe zu Zustand 3 über
+    T_FLOAT  schiebe und gehe zu Zustand 4 über
+    T_LEFT   schiebe und gehe zu Zustand 5 über
+
+    mixed_expression  gehe zu Zustand 11 über
+    expression        gehe zu Zustand 12 über
+
+
+Zustand 6
+
+    3 line: T_NEWLINE .
+
+    $default  reduziere mit Regel 3 (line)
+
+
+Zustand 7
+
+    6 line: T_QUIT . T_NEWLINE
+
+    T_NEWLINE  schiebe und gehe zu Zustand 13 über
+
+
+Zustand 8
+
+    2 calculation: calculation line .
+
+    $default  reduziere mit Regel 2 (calculation)
+
+
+Zustand 9
+
+    4 line: mixed_expression . T_NEWLINE
+    8 mixed_expression: mixed_expression . T_PLUS mixed_expression
+    9                 | mixed_expression . T_MINUS mixed_expression
+   10                 | mixed_expression . T_MULTIPLY mixed_expression
+   11                 | mixed_expression . T_DIVIDE mixed_expression
+   17                 | mixed_expression . T_PLUS expression
+   18                 | mixed_expression . T_MINUS expression
+   19                 | mixed_expression . T_MULTIPLY expression
+   20                 | mixed_expression . T_DIVIDE expression
+
+    T_PLUS      schiebe und gehe zu Zustand 14 über
+    T_MINUS     schiebe und gehe zu Zustand 15 über
+    T_MULTIPLY  schiebe und gehe zu Zustand 16 über
+    T_DIVIDE    schiebe und gehe zu Zustand 17 über
+    T_NEWLINE   schiebe und gehe zu Zustand 18 über
+
+
+Zustand 10
+
+    5 line: expression . T_NEWLINE
+   13 mixed_expression: expression . T_PLUS mixed_expression
+   14                 | expression . T_MINUS mixed_expression
+   15                 | expression . T_MULTIPLY mixed_expression
+   16                 | expression . T_DIVIDE mixed_expression
+   21                 | expression . T_DIVIDE expression
+   23 expression: expression . T_PLUS expression
+   24           | expression . T_MINUS expression
+   25           | expression . T_MULTIPLY expression
+
+    T_PLUS      schiebe und gehe zu Zustand 19 über
+    T_MINUS     schiebe und gehe zu Zustand 20 über
+    T_MULTIPLY  schiebe und gehe zu Zustand 21 über
+    T_DIVIDE    schiebe und gehe zu Zustand 22 über
+    T_NEWLINE   schiebe und gehe zu Zustand 23 über
+
+
+Zustand 11
+
+    8 mixed_expression: mixed_expression . T_PLUS mixed_expression
+    9                 | mixed_expression . T_MINUS mixed_expression
+   10                 | mixed_expression . T_MULTIPLY mixed_expression
+   11                 | mixed_expression . T_DIVIDE mixed_expression
+   12                 | T_LEFT mixed_expression . T_RIGHT
+   17                 | mixed_expression . T_PLUS expression
+   18                 | mixed_expression . T_MINUS expression
+   19                 | mixed_expression . T_MULTIPLY expression
+   20                 | mixed_expression . T_DIVIDE expression
+
+    T_PLUS      schiebe und gehe zu Zustand 14 über
+    T_MINUS     schiebe und gehe zu Zustand 15 über
+    T_MULTIPLY  schiebe und gehe zu Zustand 16 über
+    T_DIVIDE    schiebe und gehe zu Zustand 17 über
+    T_RIGHT     schiebe und gehe zu Zustand 24 über
+
+
+Zustand 12
+
+   13 mixed_expression: expression . T_PLUS mixed_expression
+   14                 | expression . T_MINUS mixed_expression
+   15                 | expression . T_MULTIPLY mixed_expression
+   16                 | expression . T_DIVIDE mixed_expression
+   21                 | expression . T_DIVIDE expression
+   23 expression: expression . T_PLUS expression
+   24           | expression . T_MINUS expression
+   25           | expression . T_MULTIPLY expression
+   26           | T_LEFT expression . T_RIGHT
+
+    T_PLUS      schiebe und gehe zu Zustand 19 über
+    T_MINUS     schiebe und gehe zu Zustand 20 über
+    T_MULTIPLY  schiebe und gehe zu Zustand 21 über
+    T_DIVIDE    schiebe und gehe zu Zustand 22 über
+    T_RIGHT     schiebe und gehe zu Zustand 25 über
+
+
+Zustand 13
+
+    6 line: T_QUIT T_NEWLINE .
+
+    $default  reduziere mit Regel 6 (line)
+
+
+Zustand 14
+
+    8 mixed_expression: mixed_expression T_PLUS . mixed_expression
+   17                 | mixed_expression T_PLUS . expression
+
+    T_INT    schiebe und gehe zu Zustand 3 über
+    T_FLOAT  schiebe und gehe zu Zustand 4 über
+    T_LEFT   schiebe und gehe zu Zustand 5 über
+
+    mixed_expression  gehe zu Zustand 26 über
+    expression        gehe zu Zustand 27 über
+
+
+Zustand 15
+
+    9 mixed_expression: mixed_expression T_MINUS . mixed_expression
+   18                 | mixed_expression T_MINUS . expression
+
+    T_INT    schiebe und gehe zu Zustand 3 über
+    T_FLOAT  schiebe und gehe zu Zustand 4 über
+    T_LEFT   schiebe und gehe zu Zustand 5 über
+
+    mixed_expression  gehe zu Zustand 28 über
+    expression        gehe zu Zustand 29 über
+
+
+Zustand 16
+
+   10 mixed_expression: mixed_expression T_MULTIPLY . mixed_expression
+   19                 | mixed_expression T_MULTIPLY . expression
+
+    T_INT    schiebe und gehe zu Zustand 3 über
+    T_FLOAT  schiebe und gehe zu Zustand 4 über
+    T_LEFT   schiebe und gehe zu Zustand 5 über
+
+    mixed_expression  gehe zu Zustand 30 über
+    expression        gehe zu Zustand 31 über
+
+
+Zustand 17
+
+   11 mixed_expression: mixed_expression T_DIVIDE . mixed_expression
+   20                 | mixed_expression T_DIVIDE . expression
+
+    T_INT    schiebe und gehe zu Zustand 3 über
+    T_FLOAT  schiebe und gehe zu Zustand 4 über
+    T_LEFT   schiebe und gehe zu Zustand 5 über
+
+    mixed_expression  gehe zu Zustand 32 über
+    expression        gehe zu Zustand 33 über
+
+
+Zustand 18
+
+    4 line: mixed_expression T_NEWLINE .
+
+    $default  reduziere mit Regel 4 (line)
+
+
+Zustand 19
+
+   13 mixed_expression: expression T_PLUS . mixed_expression
+   23 expression: expression T_PLUS . expression
+
+    T_INT    schiebe und gehe zu Zustand 3 über
+    T_FLOAT  schiebe und gehe zu Zustand 4 über
+    T_LEFT   schiebe und gehe zu Zustand 5 über
+
+    mixed_expression  gehe zu Zustand 34 über
+    expression        gehe zu Zustand 35 über
+
+
+Zustand 20
+
+   14 mixed_expression: expression T_MINUS . mixed_expression
+   24 expression: expression T_MINUS . expression
+
+    T_INT    schiebe und gehe zu Zustand 3 über
+    T_FLOAT  schiebe und gehe zu Zustand 4 über
+    T_LEFT   schiebe und gehe zu Zustand 5 über
+
+    mixed_expression  gehe zu Zustand 36 über
+    expression        gehe zu Zustand 37 über
+
+
+Zustand 21
+
+   15 mixed_expression: expression T_MULTIPLY . mixed_expression
+   25 expression: expression T_MULTIPLY . expression
+
+    T_INT    schiebe und gehe zu Zustand 3 über
+    T_FLOAT  schiebe und gehe zu Zustand 4 über
+    T_LEFT   schiebe und gehe zu Zustand 5 über
+
+    mixed_expression  gehe zu Zustand 38 über
+    expression        gehe zu Zustand 39 über
+
+
+Zustand 22
+
+   16 mixed_expression: expression T_DIVIDE . mixed_expression
+   21                 | expression T_DIVIDE . expression
+
+    T_INT    schiebe und gehe zu Zustand 3 über
+    T_FLOAT  schiebe und gehe zu Zustand 4 über
+    T_LEFT   schiebe und gehe zu Zustand 5 über
+
+    mixed_expression  gehe zu Zustand 40 über
+    expression        gehe zu Zustand 41 über
+
+
+Zustand 23
+
+    5 line: expression T_NEWLINE .
+
+    $default  reduziere mit Regel 5 (line)
+
+
+Zustand 24
+
+   12 mixed_expression: T_LEFT mixed_expression T_RIGHT .
+
+    $default  reduziere mit Regel 12 (mixed_expression)
+
+
+Zustand 25
+
+   26 expression: T_LEFT expression T_RIGHT .
+
+    $default  reduziere mit Regel 26 (expression)
+
+
+Zustand 26
+
+    8 mixed_expression: mixed_expression . T_PLUS mixed_expression
+    8                 | mixed_expression T_PLUS mixed_expression .
+    9                 | mixed_expression . T_MINUS mixed_expression
+   10                 | mixed_expression . T_MULTIPLY mixed_expression
+   11                 | mixed_expression . T_DIVIDE mixed_expression
+   17                 | mixed_expression . T_PLUS expression
+   18                 | mixed_expression . T_MINUS expression
+   19                 | mixed_expression . T_MULTIPLY expression
+   20                 | mixed_expression . T_DIVIDE expression
+
+    T_MULTIPLY  schiebe und gehe zu Zustand 16 über
+    T_DIVIDE    schiebe und gehe zu Zustand 17 über
+
+    $default  reduziere mit Regel 8 (mixed_expression)
+
+
+Zustand 27
+
+   13 mixed_expression: expression . T_PLUS mixed_expression
+   14                 | expression . T_MINUS mixed_expression
+   15                 | expression . T_MULTIPLY mixed_expression
+   16                 | expression . T_DIVIDE mixed_expression
+   17                 | mixed_expression T_PLUS expression .
+   21                 | expression . T_DIVIDE expression
+   23 expression: expression . T_PLUS expression
+   24           | expression . T_MINUS expression
+   25           | expression . T_MULTIPLY expression
+
+    T_MULTIPLY  schiebe und gehe zu Zustand 21 über
+    T_DIVIDE    schiebe und gehe zu Zustand 22 über
+
+    $default  reduziere mit Regel 17 (mixed_expression)
+
+
+Zustand 28
+
+    8 mixed_expression: mixed_expression . T_PLUS mixed_expression
+    9                 | mixed_expression . T_MINUS mixed_expression
+    9                 | mixed_expression T_MINUS mixed_expression .
+   10                 | mixed_expression . T_MULTIPLY mixed_expression
+   11                 | mixed_expression . T_DIVIDE mixed_expression
+   17                 | mixed_expression . T_PLUS expression
+   18                 | mixed_expression . T_MINUS expression
+   19                 | mixed_expression . T_MULTIPLY expression
+   20                 | mixed_expression . T_DIVIDE expression
+
+    T_MULTIPLY  schiebe und gehe zu Zustand 16 über
+    T_DIVIDE    schiebe und gehe zu Zustand 17 über
+
+    $default  reduziere mit Regel 9 (mixed_expression)
+
+
+Zustand 29
+
+   13 mixed_expression: expression . T_PLUS mixed_expression
+   14                 | expression . T_MINUS mixed_expression
+   15                 | expression . T_MULTIPLY mixed_expression
+   16                 | expression . T_DIVIDE mixed_expression
+   18                 | mixed_expression T_MINUS expression .
+   21                 | expression . T_DIVIDE expression
+   23 expression: expression . T_PLUS expression
+   24           | expression . T_MINUS expression
+   25           | expression . T_MULTIPLY expression
+
+    T_MULTIPLY  schiebe und gehe zu Zustand 21 über
+    T_DIVIDE    schiebe und gehe zu Zustand 22 über
+
+    $default  reduziere mit Regel 18 (mixed_expression)
+
+
+Zustand 30
+
+    8 mixed_expression: mixed_expression . T_PLUS mixed_expression
+    9                 | mixed_expression . T_MINUS mixed_expression
+   10                 | mixed_expression . T_MULTIPLY mixed_expression
+   10                 | mixed_expression T_MULTIPLY mixed_expression .
+   11                 | mixed_expression . T_DIVIDE mixed_expression
+   17                 | mixed_expression . T_PLUS expression
+   18                 | mixed_expression . T_MINUS expression
+   19                 | mixed_expression . T_MULTIPLY expression
+   20                 | mixed_expression . T_DIVIDE expression
+
+    $default  reduziere mit Regel 10 (mixed_expression)
+
+
+Zustand 31
+
+   13 mixed_expression: expression . T_PLUS mixed_expression
+   14                 | expression . T_MINUS mixed_expression
+   15                 | expression . T_MULTIPLY mixed_expression
+   16                 | expression . T_DIVIDE mixed_expression
+   19                 | mixed_expression T_MULTIPLY expression .
+   21                 | expression . T_DIVIDE expression
+   23 expression: expression . T_PLUS expression
+   24           | expression . T_MINUS expression
+   25           | expression . T_MULTIPLY expression
+
+    $default  reduziere mit Regel 19 (mixed_expression)
+
+
+Zustand 32
+
+    8 mixed_expression: mixed_expression . T_PLUS mixed_expression
+    9                 | mixed_expression . T_MINUS mixed_expression
+   10                 | mixed_expression . T_MULTIPLY mixed_expression
+   11                 | mixed_expression . T_DIVIDE mixed_expression
+   11                 | mixed_expression T_DIVIDE mixed_expression .
+   17                 | mixed_expression . T_PLUS expression
+   18                 | mixed_expression . T_MINUS expression
+   19                 | mixed_expression . T_MULTIPLY expression
+   20                 | mixed_expression . T_DIVIDE expression
+
+    $default  reduziere mit Regel 11 (mixed_expression)
+
+
+Zustand 33
+
+   13 mixed_expression: expression . T_PLUS mixed_expression
+   14                 | expression . T_MINUS mixed_expression
+   15                 | expression . T_MULTIPLY mixed_expression
+   16                 | expression . T_DIVIDE mixed_expression
+   20                 | mixed_expression T_DIVIDE expression .
+   21                 | expression . T_DIVIDE expression
+   23 expression: expression . T_PLUS expression
+   24           | expression . T_MINUS expression
+   25           | expression . T_MULTIPLY expression
+
+    $default  reduziere mit Regel 20 (mixed_expression)
+
+
+Zustand 34
+
+    8 mixed_expression: mixed_expression . T_PLUS mixed_expression
+    9                 | mixed_expression . T_MINUS mixed_expression
+   10                 | mixed_expression . T_MULTIPLY mixed_expression
+   11                 | mixed_expression . T_DIVIDE mixed_expression
+   13                 | expression T_PLUS mixed_expression .
+   17                 | mixed_expression . T_PLUS expression
+   18                 | mixed_expression . T_MINUS expression
+   19                 | mixed_expression . T_MULTIPLY expression
+   20                 | mixed_expression . T_DIVIDE expression
+
+    T_MULTIPLY  schiebe und gehe zu Zustand 16 über
+    T_DIVIDE    schiebe und gehe zu Zustand 17 über
+
+    $default  reduziere mit Regel 13 (mixed_expression)
+
+
+Zustand 35
+
+   13 mixed_expression: expression . T_PLUS mixed_expression
+   14                 | expression . T_MINUS mixed_expression
+   15                 | expression . T_MULTIPLY mixed_expression
+   16                 | expression . T_DIVIDE mixed_expression
+   21                 | expression . T_DIVIDE expression
+   23 expression: expression . T_PLUS expression
+   23           | expression T_PLUS expression .
+   24           | expression . T_MINUS expression
+   25           | expression . T_MULTIPLY expression
+
+    T_MULTIPLY  schiebe und gehe zu Zustand 21 über
+    T_DIVIDE    schiebe und gehe zu Zustand 22 über
+
+    $default  reduziere mit Regel 23 (expression)
+
+
+Zustand 36
+
+    8 mixed_expression: mixed_expression . T_PLUS mixed_expression
+    9                 | mixed_expression . T_MINUS mixed_expression
+   10                 | mixed_expression . T_MULTIPLY mixed_expression
+   11                 | mixed_expression . T_DIVIDE mixed_expression
+   14                 | expression T_MINUS mixed_expression .
+   17                 | mixed_expression . T_PLUS expression
+   18                 | mixed_expression . T_MINUS expression
+   19                 | mixed_expression . T_MULTIPLY expression
+   20                 | mixed_expression . T_DIVIDE expression
+
+    T_MULTIPLY  schiebe und gehe zu Zustand 16 über
+    T_DIVIDE    schiebe und gehe zu Zustand 17 über
+
+    $default  reduziere mit Regel 14 (mixed_expression)
+
+
+Zustand 37
+
+   13 mixed_expression: expression . T_PLUS mixed_expression
+   14                 | expression . T_MINUS mixed_expression
+   15                 | expression . T_MULTIPLY mixed_expression
+   16                 | expression . T_DIVIDE mixed_expression
+   21                 | expression . T_DIVIDE expression
+   23 expression: expression . T_PLUS expression
+   24           | expression . T_MINUS expression
+   24           | expression T_MINUS expression .
+   25           | expression . T_MULTIPLY expression
+
+    T_MULTIPLY  schiebe und gehe zu Zustand 21 über
+    T_DIVIDE    schiebe und gehe zu Zustand 22 über
+
+    $default  reduziere mit Regel 24 (expression)
+
+
+Zustand 38
+
+    8 mixed_expression: mixed_expression . T_PLUS mixed_expression
+    9                 | mixed_expression . T_MINUS mixed_expression
+   10                 | mixed_expression . T_MULTIPLY mixed_expression
+   11                 | mixed_expression . T_DIVIDE mixed_expression
+   15                 | expression T_MULTIPLY mixed_expression .
+   17                 | mixed_expression . T_PLUS expression
+   18                 | mixed_expression . T_MINUS expression
+   19                 | mixed_expression . T_MULTIPLY expression
+   20                 | mixed_expression . T_DIVIDE expression
+
+    $default  reduziere mit Regel 15 (mixed_expression)
+
+
+Zustand 39
+
+   13 mixed_expression: expression . T_PLUS mixed_expression
+   14                 | expression . T_MINUS mixed_expression
+   15                 | expression . T_MULTIPLY mixed_expression
+   16                 | expression . T_DIVIDE mixed_expression
+   21                 | expression . T_DIVIDE expression
+   23 expression: expression . T_PLUS expression
+   24           | expression . T_MINUS expression
+   25           | expression . T_MULTIPLY expression
+   25           | expression T_MULTIPLY expression .
+
+    $default  reduziere mit Regel 25 (expression)
+
+
+Zustand 40
+
+    8 mixed_expression: mixed_expression . T_PLUS mixed_expression
+    9                 | mixed_expression . T_MINUS mixed_expression
+   10                 | mixed_expression . T_MULTIPLY mixed_expression
+   11                 | mixed_expression . T_DIVIDE mixed_expression
+   16                 | expression T_DIVIDE mixed_expression .
+   17                 | mixed_expression . T_PLUS expression
+   18                 | mixed_expression . T_MINUS expression
+   19                 | mixed_expression . T_MULTIPLY expression
+   20                 | mixed_expression . T_DIVIDE expression
+
+    $default  reduziere mit Regel 16 (mixed_expression)
+
+
+Zustand 41
+
+   13 mixed_expression: expression . T_PLUS mixed_expression
+   14                 | expression . T_MINUS mixed_expression
+   15                 | expression . T_MULTIPLY mixed_expression
+   16                 | expression . T_DIVIDE mixed_expression
+   21                 | expression . T_DIVIDE expression
+   21                 | expression T_DIVIDE expression .
+   23 expression: expression . T_PLUS expression
+   24           | expression . T_MINUS expression
+   25           | expression . T_MULTIPLY expression
+
+    $default  reduziere mit Regel 21 (mixed_expression)
