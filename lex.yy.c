@@ -9,7 +9,7 @@
 #define YY_FLEX_MINOR_VERSION 5
 
 #include <stdio.h>
-
+#include "memory_management.h"
 
 /* cfront 1.2 defines "c_plusplus" instead of "__cplusplus" */
 #ifdef c_plusplus
@@ -18,7 +18,7 @@
 #endif
 #endif
 
-#include <stdlib.h>
+//#include <stdlib.h>
 
 #ifdef __cplusplus
 
@@ -1535,7 +1535,7 @@ static void *yy_flex_alloc( size )
 yy_size_t size;
 #endif
 	{
-	return (void *) malloc( size );
+	return (void *) my_alloc( size );
 	}
 
 #ifdef YY_USE_PROTOS
@@ -1553,7 +1553,7 @@ yy_size_t size;
 	 * any pointer type to void*, and deal with argument conversions
 	 * as though doing an assignment.
 	 */
-	return (void *) realloc( (char *) ptr, size );
+	return (void *) my_realloc( (char *) ptr, size );
 	}
 
 #ifdef YY_USE_PROTOS
@@ -1563,7 +1563,7 @@ static void yy_flex_free( ptr )
 void *ptr;
 #endif
 	{
-	free( ptr );
+	my_free( ptr );
 	}
 
 #if YY_MAIN
