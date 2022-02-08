@@ -13,7 +13,12 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
 set(CMAKE_EXECUTABLE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
 
-add_executable(Example lex.yy.c calc.tab.c calc.tab.h)
+add_executable(Example 
+    lex.yy.c 
+    calc.tab.c 
+    calc.tab.h 
+    memory_management.c 
+    memory_management.h)
 
 target_include_directories(Example
 	PUBLIC ${CMAKE_CURRENT_LIST_DIR}
